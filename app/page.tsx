@@ -167,17 +167,19 @@ const sponsor = {
 const matches = [
   {
     name: "Group Match",
-    opponent: "TBD Warriors",
+    opponent: "Old Monk",
     date: "May 9, 2026",
     time: "3 PM Onwards",
-    venue: "Saikat Soccer League Ground",
+    venue: "Doyle Park",
+    address: "8175 Regents Rd, San Diego, CA 92122",
   },
   {
     name: "Final Match",
     opponent: "TBD",
     date: "May 9, 2026",
     time: "4 PM Onwords",
-    venue: "Saikat Soccer League Ground",
+    venue: "Doyle Park",
+    address: "8175 Regents Rd, San Diego, CA 92122",
   },
 ];
 
@@ -335,6 +337,14 @@ export default function ChomkaitalaSCFanPortal() {
                   <h3 className="mt-2 text-2xl font-black">CSC vs {match.opponent}</h3>
                   <p className="mt-3 text-slate-200">{match.date} · {match.time}</p>
                   <p className="text-yellow-200/80">{match.venue}</p>
+                  <a
+                    href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(`${match.venue}, ${match.address}`)}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="mt-1 inline-block text-sm text-slate-300 underline-offset-2 hover:text-yellow-200 hover:underline"
+                  >
+                    {match.address}
+                  </a>
                 </div>
               ))}
             </div>
