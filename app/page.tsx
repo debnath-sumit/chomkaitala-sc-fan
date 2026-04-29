@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useMemo, useState } from "react";
+import React, { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 
 type TeamMember = {
@@ -230,8 +230,6 @@ export default function ChomkaitalaSCFanPortal() {
   const [fanMessage, setFanMessage] = useState("");
   const [messages, setMessages] = useState(fanTalk);
 
-  const totalPlayers = useMemo(() => players.length, []);
-
   function submitFanTalk(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     const cleanName = fanName.trim();
@@ -248,57 +246,20 @@ export default function ChomkaitalaSCFanPortal() {
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,_rgba(250,204,21,0.22),_transparent_34%),radial-gradient(circle_at_bottom_right,_rgba(14,27,59,0.9),_transparent_35%)]" />
         <div className="absolute inset-0 opacity-20 bg-[linear-gradient(115deg,_transparent_0%,_rgba(250,204,21,0.18)_45%,_transparent_70%)]" />
 
-        <div className="relative mx-auto max-w-7xl px-5 py-12 md:py-20">
+        <div className="relative mx-auto max-w-5xl px-5 py-16 text-center md:py-24">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="grid items-center gap-10 md:grid-cols-[1.1fr_0.9fr]"
           >
-            <div>
-              <p className="mb-3 inline-flex rounded-full border border-yellow-400/40 bg-yellow-400/10 px-4 py-2 text-sm font-semibold text-yellow-200 shadow-[0_0_25px_rgba(250,204,21,0.18)]">
-                Official Unofficial Fan Zone
-              </p>
-              <h1 className="text-4xl font-black tracking-tight md:text-7xl">
-                Chomkaitala <span className="text-yellow-300">Sporting Club</span>
-              </h1>
-              <p className="mt-5 max-w-2xl text-lg text-slate-200 md:text-xl">
-                One team. One dream. Unlimited chai. Welcome to the home of players, fans, sponsors, match drama, and tactical confidence.
-              </p>
-              <div className="mt-8 grid gap-4 sm:grid-cols-3">
-                <Stat icon="🎩" label="Manager" value="1" />
-                <Stat icon="👥" label="Squad" value={`${totalPlayers}`} />
-                <Stat icon="🏆" label="Target" value="Champion" />
-              </div>
-            </div>
-
-            <motion.div
-              initial={{ scale: 0.92, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              transition={{ delay: 0.15 }}
-              className="overflow-hidden rounded-[2rem] border border-yellow-400/30 bg-[#061126]/70 shadow-[0_0_40px_rgba(250,204,21,0.18)] backdrop-blur"
-            >
-              <div className="relative h-72 overflow-hidden bg-black md:h-96">
-                <img
-                  src="/images/Jersey.jpeg"
-                  alt="Chomkaitala SC official jersey"
-                  className="h-full w-full object-contain"
-                />
-                <div className="absolute left-4 top-4 rounded-full border border-yellow-400/40 bg-black/60 px-3 py-1 text-xs font-black uppercase tracking-[0.3em] text-yellow-200">
-                  Official Jersey
-                </div>
-              </div>
-              <div className="rounded-b-[2rem] bg-black/70 p-6">
-                <h2 className="text-2xl font-black text-yellow-300 md:text-3xl">CSC Match Day Mission</h2>
-                <p className="mt-3 text-slate-200">
-                  Play hard, support louder, respect everyone, and make sure the jersey looks good in every team photo.
-                </p>
-                <div className="mt-5 space-y-1 rounded-2xl border border-yellow-400/30 bg-yellow-400/10 p-4 text-yellow-100">
-                  <p>Manager: <strong>{teamManagement[0].name}</strong></p>
-                  <p>TD: <strong>{teamManagement[1].name}</strong></p>
-                  <p>Sponsor: <strong>{sponsor.name}</strong></p>
-                </div>
-              </div>
-            </motion.div>
+            <p className="inline-flex rounded-full border border-yellow-400/40 bg-yellow-400/10 px-4 py-2 text-xs font-semibold text-yellow-200 shadow-[0_0_25px_rgba(250,204,21,0.18)] sm:text-sm">
+              Official Unofficial Fan Zone
+            </p>
+            <h1 className="mt-6 text-4xl font-black leading-tight tracking-tight sm:text-5xl md:text-7xl">
+              Chomkaitala <span className="text-yellow-300">Sporting Club</span>
+            </h1>
+            <p className="mx-auto mt-5 max-w-2xl text-base text-slate-200 sm:text-lg md:text-2xl">
+              Just soccer, just fun, just good times.
+            </p>
           </motion.div>
         </div>
       </section>
@@ -478,6 +439,22 @@ export default function ChomkaitalaSCFanPortal() {
               </div>
             </div>
           </div>
+
+          <div className="mt-8 flex flex-col items-center gap-4 border-t border-yellow-400/20 pt-6 sm:flex-row sm:gap-5">
+            <div className="relative h-20 w-20 shrink-0 overflow-hidden rounded-2xl border border-yellow-400/30 bg-black sm:h-24 sm:w-24">
+              <img
+                src="/images/Jersey.jpeg"
+                alt="Chomkaitala SC official jersey"
+                className="h-full w-full object-contain"
+              />
+            </div>
+            <div className="text-center sm:text-left">
+              <p className="text-[10px] font-black uppercase tracking-[0.3em] text-yellow-200 sm:text-xs">Official Jersey</p>
+              <p className="mt-1 text-sm text-slate-200">
+                {sponsor.name} proudly powers our match-day kit.
+              </p>
+            </div>
+          </div>
         </section>
 
         <section className="mt-16 overflow-hidden rounded-[2rem] border border-yellow-400/30 bg-gradient-to-br from-[#071a3f]/80 via-[#061126]/80 to-black p-6 shadow-[0_0_40px_rgba(250,204,21,0.18)] sm:p-8">
@@ -577,16 +554,6 @@ export default function ChomkaitalaSCFanPortal() {
           </motion.div>
         )}
       </AnimatePresence>
-    </div>
-  );
-}
-
-function Stat({ icon, label, value }: { icon: string; label: string; value: string }) {
-  return (
-    <div className="rounded-3xl border border-yellow-400/25 bg-[#071a3f]/60 p-5 backdrop-blur shadow-[0_0_25px_rgba(250,204,21,0.08)]">
-      <div className="mb-3 text-3xl">{icon}</div>
-      <p className="text-3xl font-black text-yellow-300">{value}</p>
-      <p className="text-sm text-yellow-200/80">{label}</p>
     </div>
   );
 }
