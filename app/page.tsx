@@ -3,17 +3,49 @@
 import React, { useMemo, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 
-const manager = {
-  name: "Arun Dutta",
-  title: "Manager Saab",
-  role: "Manager / Motivation Officer",
-  hobby: "Demanding unlimited halftime chai",
-  quote: "Give me chai, I will give you tactics.",
-  image: "/images/arun.png",
-  strengths: ["Motivation", "Team bonding", "Sponsor hunting"],
+type TeamMember = {
+  name: string;
+  title: string;
+  role: string;
+  hobby: string;
+  quote: string;
+  image: string;
+  strengths: string[];
 };
 
-const players = [
+const teamManagement: TeamMember[] = [
+  {
+    name: "Arun Dutta",
+    title: "Manager Saab",
+    role: "Manager / Motivation Officer",
+    hobby: "Demanding unlimited halftime chai",
+    quote: "Give me chai, I will give you tactics.",
+    image: "/images/arun.png",
+    strengths: ["Motivation", "Team bonding", "Sponsor hunting"],
+  },
+  {
+    name: "Shantanu",
+    title: "The Mastermind",
+    role: "Technical Director",
+    hobby: "Drawing tactics on every available napkin",
+    quote: "Tactics win matches. Chai wins dressing rooms.",
+    image: "/images/shantanu.png",
+    strengths: ["Game analysis", "Tactical setup", "Recruitment"],
+  },
+  {
+    name: "Diya",
+    title: "Recovery Queen",
+    role: "Physiotherapist",
+    hobby: "Turning sore muscles into match-ready legs",
+    quote: "No injury survives my care.",
+    image: "/images/diya.png",
+    strengths: ["Recovery", "Injury prevention", "Mobility"],
+  },
+];
+
+const manager = teamManagement[0];
+
+const players: TeamMember[] = [
   {
     name: "Suman",
     title: "Captain Fantastic",
@@ -113,6 +145,15 @@ const players = [
     image: "/images/sandipan.png",
     strengths: ["Positioning", "Reading the game", "Aerial duels"],
   },
+  {
+    name: "Sourav",
+    title: "Mystery Man",
+    role: "Squad Member / Photo Pending",
+    hobby: "Avoiding the team photographer",
+    quote: "Picture loading… performance already delivered.",
+    image: "/images/unknown.png",
+    strengths: ["Surprise factor", "Team spirit", "Match-day presence"],
+  },
 ];
 
 const sponsor = {
@@ -147,14 +188,14 @@ const fanTalk = [
 ];
 
 export default function ChomkaitalaSCFanPortal() {
-  const [selectedPlayer, setSelectedPlayer] = useState(null);
+  const [selectedPlayer, setSelectedPlayer] = useState<TeamMember | null>(null);
   const [fanName, setFanName] = useState("");
   const [fanMessage, setFanMessage] = useState("");
   const [messages, setMessages] = useState(fanTalk);
 
   const totalPlayers = useMemo(() => players.length, []);
 
-  function submitFanTalk(e) {
+  function submitFanTalk(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     const cleanName = fanName.trim();
     const cleanMessage = fanMessage.trim();
@@ -254,30 +295,33 @@ export default function ChomkaitalaSCFanPortal() {
         </div>
 
         <div className="mt-16">
-          <SectionHeader title="The Manager" subtitle="The brain, the chai-runner, the motivation department." />
+          <SectionHeader title="Team Management" subtitle="Coach, technical director, and the recovery desk." />
           <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-            <motion.button
-              whileHover={{ y: -8 }}
-              onClick={() => setSelectedPlayer(manager)}
-              className="group overflow-hidden rounded-[1.75rem] border border-yellow-400/25 bg-[#071a3f]/65 text-left shadow-xl backdrop-blur transition hover:border-yellow-300/60 hover:shadow-[0_0_35px_rgba(250,204,21,0.2)]"
-            >
-              <div className="relative h-64 overflow-hidden">
-                <img
-                  src={manager.image}
-                  alt={manager.name}
-                  className="h-full w-full object-cover transition duration-500 group-hover:scale-110"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-black via-black/25 to-transparent" />
-                <div className="absolute bottom-4 left-4 right-4">
-                  <h3 className="text-2xl font-black">{manager.name}</h3>
-                  <p className="text-sm font-semibold text-yellow-200">{manager.title}</p>
+            {teamManagement.map((member) => (
+              <motion.button
+                key={member.name}
+                whileHover={{ y: -8 }}
+                onClick={() => setSelectedPlayer(member)}
+                className="group overflow-hidden rounded-[1.75rem] border border-yellow-400/25 bg-[#071a3f]/65 text-left shadow-xl backdrop-blur transition hover:border-yellow-300/60 hover:shadow-[0_0_35px_rgba(250,204,21,0.2)]"
+              >
+                <div className="relative h-64 overflow-hidden">
+                  <img
+                    src={member.image}
+                    alt={member.name}
+                    className="h-full w-full object-cover transition duration-500 group-hover:scale-110"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black via-black/25 to-transparent" />
+                  <div className="absolute bottom-4 left-4 right-4">
+                    <h3 className="text-2xl font-black">{member.name}</h3>
+                    <p className="text-sm font-semibold text-yellow-200">{member.title}</p>
+                  </div>
                 </div>
-              </div>
-              <div className="p-5">
-                <p className="text-sm text-slate-200">{manager.role}</p>
-                <p className="mt-3 text-xs uppercase tracking-[0.25em] text-yellow-500/80">Tap for details</p>
-              </div>
-            </motion.button>
+                <div className="p-5">
+                  <p className="text-sm text-slate-200">{member.role}</p>
+                  <p className="mt-3 text-xs uppercase tracking-[0.25em] text-yellow-500/80">Tap for details</p>
+                </div>
+              </motion.button>
+            ))}
           </div>
         </div>
 
@@ -407,7 +451,7 @@ export default function ChomkaitalaSCFanPortal() {
   );
 }
 
-function Stat({ icon, label, value }) {
+function Stat({ icon, label, value }: { icon: string; label: string; value: string }) {
   return (
     <div className="rounded-3xl border border-yellow-400/25 bg-[#071a3f]/60 p-5 backdrop-blur shadow-[0_0_25px_rgba(250,204,21,0.08)]">
       <div className="mb-3 text-3xl">{icon}</div>
@@ -417,7 +461,7 @@ function Stat({ icon, label, value }) {
   );
 }
 
-function SectionHeader({ title, subtitle, compact = false }) {
+function SectionHeader({ title, subtitle, compact = false }: { title: string; subtitle: string; compact?: boolean }) {
   return (
     <div className={compact ? "mb-6" : "mb-8"}>
       <h2 className="text-3xl font-black text-yellow-300 md:text-4xl">{title}</h2>
@@ -426,7 +470,7 @@ function SectionHeader({ title, subtitle, compact = false }) {
   );
 }
 
-function InfoCard({ label, value }) {
+function InfoCard({ label, value }: { label: string; value: string }) {
   return (
     <div className="rounded-3xl border border-yellow-400/20 bg-black/50 p-5">
       <p className="text-xs font-black uppercase tracking-[0.25em] text-yellow-500/80">{label}</p>
