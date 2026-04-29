@@ -16,30 +16,39 @@ type TeamMember = {
 const teamManagement: TeamMember[] = [
   {
     name: "Arun Dutta",
-    title: "Manager Saab",
-    role: "Manager / Motivation Officer",
-    hobby: "Demanding unlimited halftime chai",
-    quote: "Give me chai, I will give you tactics.",
+    title: "Manager",
+    role: "Manager",
+    hobby: "Acting, community support, and occasional sideline drama",
+   quote: "If you need help, just say the word — I’ve got you",
     image: "/images/arun.png",
     strengths: ["Motivation", "Team bonding", "Sponsor hunting"],
   },
   {
-    name: "Shantanu",
+    name: "Shantanu Sinha",
     title: "The Mastermind",
     role: "Technical Director",
-    hobby: "Drawing tactics on every available napkin",
-    quote: "Tactics win matches. Chai wins dressing rooms.",
+    hobby: "Political debates, motivating young players, and cooking for the squad",
+    quote: "First I win the argument, then I win the hearts, then I win the kitchen 🍳",
     image: "/images/shantanu.png",
     strengths: ["Game analysis", "Tactical setup", "Recruitment"],
   },
   {
-    name: "Diya",
+    name: "Diya Chowdhury",
     title: "Recovery Queen",
     role: "Physiotherapist",
-    hobby: "Turning sore muscles into match-ready legs",
-    quote: "No injury survives my care.",
+    hobby: "Motherhood and movie marathons",
+quote: "Raising stars at home and watching stars on screen 🎬",
     image: "/images/diya.png",
     strengths: ["Recovery", "Injury prevention", "Mobility"],
+  },
+  {
+    name: "Riyon",
+    title: "The Crowd Magnet",
+    role: "Brand Ambassador",
+    hobby: "Charming cameras and rallying the fanbase",
+    quote: "Show up, smile, and let the team do the rest.",
+    image: "/images/riyon.png",
+    strengths: ["Public presence", "Fan engagement", "Brand storytelling"],
   },
 ];
 
@@ -50,8 +59,8 @@ const players: TeamMember[] = [
     name: "Suman",
     title: "Captain Fantastic",
     role: "Captain / Midfield General",
-    hobby: "Creating strategies during chai breaks",
-    quote: "Pressure is temporary, captaincy is permanent.",
+    hobby: "Playing soccer, cricket, and breaking down strategies",
+    quote: "Every move has a plan — and every plan wins matches",
     image: "/images/suman.png",
     strengths: ["Leadership", "Passing", "Calm under pressure"],
   },
@@ -59,35 +68,35 @@ const players: TeamMember[] = [
     name: "Tintin",
     title: "Adventure Mode",
     role: "Winger / Dribble Department",
-    hobby: "Inventing new ways to nutmeg defenders",
-    quote: "Why pass when you can dribble?",
+    hobby: "Building robots and singing like a rockstar",
+    quote: "I code my moves like a robot and freestyle like a song",
     image: "/images/tintin.png",
     strengths: ["Dribbling", "Creativity", "Fearlessness"],
   },
   {
     name: "Shrish",
-    title: "Goal Magnet",
-    role: "Striker / Finishing School",
-    hobby: "Practising celebrations more than shots",
-    quote: "Goals are my love language.",
+    title: "The Anchor",
+    role: "Midfielder / Shield Department",
+    hobby: "Math puzzles and music sessions",
+    quote: "I solve equations off the field and problems on it",
     image: "/images/shrish.png",
-    strengths: ["Finishing", "Movement", "Confidence"],
-  },
+    strengths: ["Positioning", "Interceptions", "Composure"],
+},
   {
     name: "Abesh",
     title: "Energy Spark",
     role: "Forward / Speed Department",
-    hobby: "Outrunning defenders before they realise",
-    quote: "If in doubt, sprint it out.",
+    hobby: "Playing soccer and jamming on the tabla",
+    quote: "I run to my own beat — fast feet, faster rhythm 🥁⚽",
     image: "/images/abesh.png",
     strengths: ["Pace", "Stamina", "Finishing"],
-  },
+},
   {
     name: "Raika",
     title: "Pace Specialist",
     role: "Winger / Speed Lane",
-    hobby: "Counting how many defenders he leaves behind",
-    quote: "Catch me if you can.",
+    hobby: "Playing soccer and following the game passionately",
+  quote: "Football isn’t just a game — it’s part of who I am",
     image: "/images/raika.png",
     strengths: ["Acceleration", "Crossing", "Dribbling"],
   },
@@ -95,8 +104,8 @@ const players: TeamMember[] = [
     name: "Debasmit",
     title: "Set Piece Wizard",
     role: "Midfield / Free Kick Department",
-    hobby: "Drawing invisible lines around the wall",
-    quote: "Give me a free kick, I will give you a goal.",
+    hobby: "Following Manchester United and practicing set pieces",
+quote: "Red at heart, deadly on set pieces",
     image: "/images/debasmit.png",
     strengths: ["Free kicks", "Crossing", "Vision"],
   },
@@ -112,7 +121,7 @@ const players: TeamMember[] = [
   {
     name: "Subhrangsu",
     title: "Stamina King",
-    role: "Midfield / Engine Room",
+    role: "Defender / Engine Room",
     hobby: "Running the full 90 and asking for extra time",
     quote: "Tired is just a state of mind.",
     image: "/images/subhrangsu.png",
@@ -121,7 +130,7 @@ const players: TeamMember[] = [
   {
     name: "Sumit",
     title: "Tactical Think Tank",
-    role: "Midfield / Strategy Department",
+    role: "Defender / Strategy Department",
     hobby: "Planning formations that only he understands",
     quote: "We do not park the bus. We decorate it.",
     image: "/images/sumit.png",
@@ -130,21 +139,21 @@ const players: TeamMember[] = [
   {
     name: "Arindom",
     title: "Style Master",
-    role: "Midfield / Flair Department",
-    hobby: "Dribble first, think later",
-    quote: "Football is art. I am the brush.",
+    role: "Defender / Flair Department",
+    hobby: "Cooking and perfecting his signature biryani",
+quote: "I add flair on the field and flavor in the kitchen",
     image: "/images/arindom.png",
     strengths: ["Dribbling", "Flair", "First touch"],
   },
   {
-    name: "Sandipan",
-    title: "Cool Anchor",
-    role: "Defender / Composure Department",
-    hobby: "Reading the game like a Sunday newspaper",
-    quote: "Calm wins games.",
-    image: "/images/sandipan.png",
-    strengths: ["Positioning", "Reading the game", "Aerial duels"],
-  },
+  name: "Sandipan",
+  title: "Ice-Cold Finisher",
+  role: "Striker / Finishing Department",
+  hobby: "Finding space and timing runs to perfection",
+  quote: "Stay calm, strike sharp.",
+  image: "/images/sandipan.png",
+  strengths: ["Finishing", "Positioning", "Composure"],
+},
   {
     name: "Sourav",
     title: "Mystery Man",
@@ -154,15 +163,41 @@ const players: TeamMember[] = [
     image: "/images/unknown.png",
     strengths: ["Surprise factor", "Team spirit", "Match-day presence"],
   },
+  {
+    name: "Rajdeep",
+    title: "Silent Striker",
+    role: "Forward / Box Specialist",
+    hobby: "Scoring goals and keeping it cool",
+    quote: "Less talk, more goals.",
+    image: "/images/rajdeep.png",
+    strengths: ["Finishing", "Off-the-ball runs", "Composure"],
+  },
 ];
 
+const supportInfo = {
+  paypalHandle: "Sdebnath007",
+  paypalEmail: "debnath_sumit@outlook.com",
+  suggestedAmounts: [5, 10, 25],
+  currencySymbol: "$",
+};
+
 const sponsor = {
-  name: "Bahar",
+  name: "BAHAR Indian Restaurant & Catering",
   title: "Sponsor Legend",
   role: "Official Sponsor / Jersey Department",
   tagline: "Proudly supporting jerseys, team confidence, and the belief that good looks can add at least 10% performance.",
   quote: "Jersey first, trophy next.",
 };
+
+const announcements = [
+  {
+    icon: "📣",
+    tag: "Fan Perk",
+    title: "Special Discount from Bahar",
+    body: "Show your CSC fan support and unlock an exclusive discount from our official sponsor Bahar.",
+    endsOn: "May 8, 2026",
+  },
+];
 
 const matches = [
   {
@@ -185,8 +220,8 @@ const matches = [
 
 const fanTalk = [
   "Chomkaitala SC is not just a team, it is an emotion.",
-  "Manager Arun needs only chai and belief.",
-  "This squad has depth, drama, and dangerous confidence.",
+  "Manager Arun and TD Shantanu already decorate the strategies with their vision.",
+  "This squad has depth, drama, and dangerous confidence, but fitness is missing ",
 ];
 
 export default function ChomkaitalaSCFanPortal() {
@@ -267,6 +302,39 @@ export default function ChomkaitalaSCFanPortal() {
       </section>
 
       <main className="mx-auto max-w-7xl px-5 py-12">
+        {announcements.length > 0 && (
+          <div className="mb-12 grid gap-4">
+            {announcements.map((item) => (
+              <div
+                key={item.title}
+                className="relative overflow-hidden rounded-[1.75rem] border border-yellow-400/40 bg-gradient-to-br from-yellow-400/20 via-[#071a3f]/80 to-black p-5 shadow-[0_0_35px_rgba(250,204,21,0.18)] sm:p-6"
+              >
+                <div
+                  className="pointer-events-none absolute -right-10 -top-10 h-40 w-40 rounded-full bg-yellow-400/20 blur-3xl"
+                  aria-hidden
+                />
+                <div className="relative flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+                  <div className="flex items-start gap-4">
+                    <span className="grid h-12 w-12 shrink-0 place-items-center rounded-2xl border border-yellow-400/40 bg-yellow-400/10 text-2xl">
+                      {item.icon}
+                    </span>
+                    <div>
+                      <p className="text-[10px] font-black uppercase tracking-[0.3em] text-yellow-300 sm:text-xs">
+                        {item.tag}
+                      </p>
+                      <h3 className="mt-1 text-xl font-black text-white sm:text-2xl">{item.title}</h3>
+                      <p className="mt-2 max-w-2xl text-sm text-slate-200 sm:text-base">{item.body}</p>
+                    </div>
+                  </div>
+                  <span className="inline-flex shrink-0 items-center gap-2 self-start rounded-full border border-yellow-400/40 bg-yellow-400/10 px-4 py-2 text-xs font-bold text-yellow-100 sm:self-auto">
+                    <span aria-hidden>⏳</span> Offer ends <strong className="text-yellow-300">{item.endsOn}</strong>
+                  </span>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+
         <SectionHeader title="Meet the Squad" subtitle="Click any player photo to open the player card." />
         <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
           {players.map((player) => (
@@ -384,8 +452,8 @@ export default function ChomkaitalaSCFanPortal() {
           <div className="grid gap-8 md:grid-cols-[1.1fr_0.9fr] md:items-center md:gap-10">
             <div>
               <p className="text-xs font-black uppercase tracking-[0.3em] text-yellow-200 sm:text-sm">Sponsor Spotlight</p>
-              <h2 className="mt-2 text-2xl font-black text-yellow-300 sm:text-3xl md:text-4xl">{sponsor.name} — {sponsor.title}</h2>
-              <p className="mt-1 text-sm font-semibold text-yellow-100/80">{sponsor.role}</p>
+              <h2 className="mt-2 text-2xl font-black leading-tight text-yellow-300 sm:text-3xl md:text-4xl">{sponsor.name}</h2>
+              <p className="mt-2 text-sm font-semibold uppercase tracking-[0.2em] text-yellow-100/80 sm:text-base">Official Sponsor</p>
               <p className="mt-4 text-slate-200">{sponsor.tagline}</p>
               <p className="mt-4 text-yellow-100/90">“{sponsor.quote}”</p>
             </div>
@@ -406,6 +474,56 @@ export default function ChomkaitalaSCFanPortal() {
                   />
                 </div>
               </div>
+            </div>
+          </div>
+        </section>
+
+        <section className="mt-16 overflow-hidden rounded-[2rem] border border-yellow-400/30 bg-gradient-to-br from-[#071a3f]/80 via-[#061126]/80 to-black p-6 shadow-[0_0_40px_rgba(250,204,21,0.18)] sm:p-8">
+          <div className="grid gap-8 md:grid-cols-[1.1fr_0.9fr] md:items-center md:gap-10">
+            <div>
+              <p className="text-xs font-black uppercase tracking-[0.3em] text-yellow-200 sm:text-sm">Support the Squad</p>
+              <h2 className="mt-2 text-2xl font-black text-yellow-300 sm:text-3xl md:text-4xl">
+                Show some support to the team 💛
+              </h2>
+              <p className="mt-4 max-w-xl text-slate-200">
+                Every fan contribution goes towards jerseys, footballs, halftime snacks, and the team&apos;s growing chai bill. Send a small thank-you through PayPal in seconds.
+              </p>
+              <p className="mt-4 text-sm text-slate-400">
+                PayPal email:{" "}
+                <a
+                  href={`mailto:${supportInfo.paypalEmail}`}
+                  className="font-mono text-yellow-200 underline-offset-2 hover:underline"
+                >
+                  {supportInfo.paypalEmail}
+                </a>
+              </p>
+            </div>
+
+            <div className="flex flex-col gap-3">
+              <a
+                href={`https://www.paypal.com/paypalme/${supportInfo.paypalHandle}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center justify-center gap-2 rounded-2xl bg-yellow-400 px-6 py-4 text-base font-black text-black shadow-[0_0_25px_rgba(250,204,21,0.35)] transition hover:bg-yellow-300 hover:shadow-[0_0_35px_rgba(250,204,21,0.5)] sm:text-lg"
+              >
+                <span aria-hidden>💛</span> Support on PayPal
+              </a>
+              <div className="grid grid-cols-3 gap-2">
+                {supportInfo.suggestedAmounts.map((amount) => (
+                  <a
+                    key={amount}
+                    href={`https://www.paypal.com/paypalme/${supportInfo.paypalHandle}/${amount}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="rounded-2xl border border-yellow-400/40 bg-black/60 py-3 text-center font-bold text-yellow-200 transition hover:border-yellow-300 hover:bg-black"
+                  >
+                    {supportInfo.currencySymbol}{amount}
+                  </a>
+                ))}
+              </div>
+              <p className="text-center text-xs text-slate-400">
+                Amounts in USD · Powered by PayPal
+              </p>
             </div>
           </div>
         </section>
