@@ -193,7 +193,7 @@ const announcements = [
   {
     icon: "📣",
     tag: "Fan Perk",
-    title: "Special Discount from Bahar",
+    title: "Special Discount from BAHAR",
     body: "Show your CSC fan support and unlock an exclusive discount from our official sponsor Bahar.",
     endsOn: "May 8, 2026",
   },
