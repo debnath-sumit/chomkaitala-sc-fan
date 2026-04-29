@@ -292,8 +292,10 @@ export default function ChomkaitalaSCFanPortal() {
                 <p className="mt-3 text-slate-200">
                   Play hard, support louder, respect everyone, and make sure the jersey looks good in every team photo.
                 </p>
-                <div className="mt-5 rounded-2xl border border-yellow-400/30 bg-yellow-400/10 p-4 text-yellow-100">
-                  Manager: <strong>{manager.name}</strong> · Sponsor: <strong>{sponsor.name}</strong>
+                <div className="mt-5 space-y-1 rounded-2xl border border-yellow-400/30 bg-yellow-400/10 p-4 text-yellow-100">
+                  <p>Manager: <strong>{teamManagement[0].name}</strong></p>
+                  <p>TD: <strong>{teamManagement[1].name}</strong></p>
+                  <p>Sponsor: <strong>{sponsor.name}</strong></p>
                 </div>
               </div>
             </motion.div>
