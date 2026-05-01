@@ -186,6 +186,7 @@ type Donator = { name: string };
 const donators: Donator[] = [
   { name: "Purabi Di" },
   { name: "Usha Di" },
+  { name: "Bhaswati Di" },
   { name: "Diya" },
   { name: "Ankur" },
 ];
@@ -274,38 +275,28 @@ export default function ChomkaitalaSCFanPortal() {
       </section>
 
       <main className="mx-auto max-w-7xl px-5 py-12">
-        {announcements.length > 0 && (
-          <div className="mb-12 grid gap-4">
-            {announcements.map((item) => (
-              <div
-                key={item.title}
-                className="relative overflow-hidden rounded-[1.75rem] border border-yellow-400/40 bg-gradient-to-br from-yellow-400/20 via-[#071a3f]/80 to-black p-5 shadow-[0_0_35px_rgba(250,204,21,0.18)] sm:p-6"
+        <section className="mb-12 overflow-hidden rounded-[2rem] border border-yellow-400/30 bg-gradient-to-br from-[#071a3f]/80 via-[#061126]/80 to-black p-6 shadow-[0_0_35px_rgba(250,204,21,0.18)] sm:p-8">
+          <div className="text-center">
+            <p className="text-xs font-black uppercase tracking-[0.3em] text-yellow-200 sm:text-sm">Wall of Thanks</p>
+            <h2 className="mt-2 text-2xl font-black text-yellow-300 sm:text-3xl md:text-4xl">
+              Thank You, Top Fans 💛
+            </h2>
+            <p className="mx-auto mt-3 max-w-2xl text-sm text-slate-300 sm:text-base">
+              Huge shout-out to the fans who chipped in for jerseys, footballs, and post-match chai. You keep CSC running.
+            </p>
+          </div>
+
+          <div className="mt-6 flex flex-wrap justify-center gap-2">
+            {donators.map((d) => (
+              <span
+                key={d.name}
+                className="rounded-full border border-yellow-400/30 bg-black/60 px-4 py-2 text-sm font-semibold text-yellow-100"
               >
-                <div
-                  className="pointer-events-none absolute -right-10 -top-10 h-40 w-40 rounded-full bg-yellow-400/20 blur-3xl"
-                  aria-hidden
-                />
-                <div className="relative flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-                  <div className="flex items-start gap-4">
-                    <span className="grid h-12 w-12 shrink-0 place-items-center rounded-2xl border border-yellow-400/40 bg-yellow-400/10 text-2xl">
-                      {item.icon}
-                    </span>
-                    <div>
-                      <p className="text-[10px] font-black uppercase tracking-[0.3em] text-yellow-300 sm:text-xs">
-                        {item.tag}
-                      </p>
-                      <h3 className="mt-1 text-xl font-black text-white sm:text-2xl">{item.title}</h3>
-                      <p className="mt-2 max-w-2xl text-sm text-slate-200 sm:text-base">{item.body}</p>
-                    </div>
-                  </div>
-                  <span className="inline-flex shrink-0 items-center gap-2 self-start rounded-full border border-yellow-400/40 bg-yellow-400/10 px-4 py-2 text-xs font-bold text-yellow-100 sm:self-auto">
-                    <span aria-hidden>⏳</span> Offer ends <strong className="text-yellow-300">{item.endsOn}</strong>
-                  </span>
-                </div>
-              </div>
+                💛 {d.name}
+              </span>
             ))}
           </div>
-        )}
+        </section>
 
         <SectionHeader title="Meet the Squad" subtitle="Click any player photo to open the player card." />
         <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
@@ -466,28 +457,38 @@ export default function ChomkaitalaSCFanPortal() {
           </div>
         </section>
 
-        <section className="mt-16 overflow-hidden rounded-[2rem] border border-yellow-400/30 bg-gradient-to-br from-[#071a3f]/80 via-[#061126]/80 to-black p-6 shadow-[0_0_35px_rgba(250,204,21,0.18)] sm:p-8">
-          <div className="text-center">
-            <p className="text-xs font-black uppercase tracking-[0.3em] text-yellow-200 sm:text-sm">Wall of Thanks</p>
-            <h2 className="mt-2 text-2xl font-black text-yellow-300 sm:text-3xl md:text-4xl">
-              Thank You, Top Fans 💛
-            </h2>
-            <p className="mx-auto mt-3 max-w-2xl text-sm text-slate-300 sm:text-base">
-              Huge shout-out to the fans who chipped in for jerseys, footballs, and post-match chai. You keep CSC running.
-            </p>
-          </div>
-
-          <div className="mt-6 flex flex-wrap justify-center gap-2">
-            {donators.map((d) => (
-              <span
-                key={d.name}
-                className="rounded-full border border-yellow-400/30 bg-black/60 px-4 py-2 text-sm font-semibold text-yellow-100"
+        {announcements.length > 0 && (
+          <div className="mt-16 grid gap-4">
+            {announcements.map((item) => (
+              <div
+                key={item.title}
+                className="relative overflow-hidden rounded-[1.75rem] border border-yellow-400/40 bg-gradient-to-br from-yellow-400/20 via-[#071a3f]/80 to-black p-5 shadow-[0_0_35px_rgba(250,204,21,0.18)] sm:p-6"
               >
-                💛 {d.name}
-              </span>
+                <div
+                  className="pointer-events-none absolute -right-10 -top-10 h-40 w-40 rounded-full bg-yellow-400/20 blur-3xl"
+                  aria-hidden
+                />
+                <div className="relative flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+                  <div className="flex items-start gap-4">
+                    <span className="grid h-12 w-12 shrink-0 place-items-center rounded-2xl border border-yellow-400/40 bg-yellow-400/10 text-2xl">
+                      {item.icon}
+                    </span>
+                    <div>
+                      <p className="text-[10px] font-black uppercase tracking-[0.3em] text-yellow-300 sm:text-xs">
+                        {item.tag}
+                      </p>
+                      <h3 className="mt-1 text-xl font-black text-white sm:text-2xl">{item.title}</h3>
+                      <p className="mt-2 max-w-2xl text-sm text-slate-200 sm:text-base">{item.body}</p>
+                    </div>
+                  </div>
+                  <span className="inline-flex shrink-0 items-center gap-2 self-start rounded-full border border-yellow-400/40 bg-yellow-400/10 px-4 py-2 text-xs font-bold text-yellow-100 sm:self-auto">
+                    <span aria-hidden>⏳</span> Offer ends <strong className="text-yellow-300">{item.endsOn}</strong>
+                  </span>
+                </div>
+              </div>
             ))}
           </div>
-        </section>
+        )}
 
         <section className="mt-16 overflow-hidden rounded-[2rem] border border-yellow-400/30 bg-gradient-to-br from-[#071a3f]/80 via-[#061126]/80 to-black p-6 shadow-[0_0_40px_rgba(250,204,21,0.18)] sm:p-8">
           <div className="grid gap-8 md:grid-cols-[1.1fr_0.9fr] md:items-center md:gap-10">
