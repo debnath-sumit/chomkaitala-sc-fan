@@ -181,6 +181,15 @@ const supportInfo = {
   currencySymbol: "$",
 };
 
+type Donator = { name: string };
+
+const donators: Donator[] = [
+  { name: "Purabi Di" },
+  { name: "Usha Di" },
+  { name: "Diya" },
+  { name: "Ankur" },
+];
+
 const sponsor = {
   name: "BAHAR Indian Restaurant & Catering",
   title: "Sponsor Legend",
@@ -454,6 +463,29 @@ export default function ChomkaitalaSCFanPortal() {
                 {sponsor.name} proudly powers our match-day kit.
               </p>
             </div>
+          </div>
+        </section>
+
+        <section className="mt-16 overflow-hidden rounded-[2rem] border border-yellow-400/30 bg-gradient-to-br from-[#071a3f]/80 via-[#061126]/80 to-black p-6 shadow-[0_0_35px_rgba(250,204,21,0.18)] sm:p-8">
+          <div className="text-center">
+            <p className="text-xs font-black uppercase tracking-[0.3em] text-yellow-200 sm:text-sm">Wall of Thanks</p>
+            <h2 className="mt-2 text-2xl font-black text-yellow-300 sm:text-3xl md:text-4xl">
+              Thank You, Top Fans 💛
+            </h2>
+            <p className="mx-auto mt-3 max-w-2xl text-sm text-slate-300 sm:text-base">
+              Huge shout-out to the fans who chipped in for jerseys, footballs, and post-match chai. You keep CSC running.
+            </p>
+          </div>
+
+          <div className="mt-6 flex flex-wrap justify-center gap-2">
+            {donators.map((d) => (
+              <span
+                key={d.name}
+                className="rounded-full border border-yellow-400/30 bg-black/60 px-4 py-2 text-sm font-semibold text-yellow-100"
+              >
+                💛 {d.name}
+              </span>
+            ))}
           </div>
         </section>
 
