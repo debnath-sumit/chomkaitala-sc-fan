@@ -190,6 +190,7 @@ const donators: Donator[] = [
   { name: "Diya" },
   { name: "Ankur" },
   { name: "Sandy" },
+  { name: "Proma" },
 ];
 
 const sponsor = {
