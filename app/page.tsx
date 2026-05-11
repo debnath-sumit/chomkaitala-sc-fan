@@ -231,10 +231,127 @@ const fanTalk = [
 export default function ChomkaitalaSCFanPortal() {
   const [selectedPlayer, setSelectedPlayer] = useState<TeamMember | null>(null);
   const [selectedPhoto, setSelectedPhoto] = useState<number | null>(null);
+  const [uploadedPhotos, setUploadedPhotos] = useState<string[]>([]);
+  const [pendingUploads, setPendingUploads] = useState<string[]>([]);
+  const [uploadStatus, setUploadStatus] = useState<{ text: string; tone: "info" | "warn" | "success" } | null>(null);
+  const [isUploading, setIsUploading] = useState(false);
   const [fanName, setFanName] = useState("");
   const [fanMessage, setFanMessage] = useState("");
   const [messages, setMessages] = useState(fanTalk);
   const [showIntro, setShowIntro] = useState(true);
+
+  const allPhotos = [...galleryImages, ...uploadedPhotos];
+
+  function downscaleImage(file: File, maxDim = 1600): Promise<string> {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = (ev) => {
+        const img = new Image();
+        img.onload = () => {
+          const longest = Math.max(img.width, img.height);
+          if (longest <= maxDim) {
+            resolve(URL.createObjectURL(file));
+            return;
+          }
+          const scale = maxDim / longest;
+          const w = Math.round(img.width * scale);
+          const h = Math.round(img.height * scale);
+          const canvas = document.createElement("canvas");
+          canvas.width = w;
+          canvas.height = h;
+          const ctx = canvas.getContext("2d");
+          if (!ctx) {
+            reject(new Error("canvas context unavailable"));
+            return;
+          }
+          ctx.drawImage(img, 0, 0, w, h);
+          canvas.toBlob(
+            (blob) => (blob ? resolve(URL.createObjectURL(blob)) : reject(new Error("toBlob failed"))),
+            "image/jpeg",
+            0.88,
+          );
+        };
+        img.onerror = () => reject(new Error("image load failed"));
+        img.src = ev.target?.result as string;
+      };
+      reader.onerror = () => reject(new Error("reader failed"));
+      reader.readAsDataURL(file);
+    });
+  }
+
+  async function handlePhotoUpload(e: React.ChangeEvent<HTMLInputElement>) {
+    const files = e.target.files;
+    if (!files || files.length === 0) return;
+    setIsUploading(true);
+    setUploadStatus(null);
+
+    let skippedHeic = 0;
+    let skippedTooBig = 0;
+    let skippedOther = 0;
+    const accepted: string[] = [];
+    const MAX_BYTES = 25 * 1024 * 1024;
+
+    for (const file of Array.from(files)) {
+      const name = file.name.toLowerCase();
+      const isHeic = name.endsWith(".heic") || name.endsWith(".heif") || file.type === "image/heic" || file.type === "image/heif";
+      if (isHeic) {
+        skippedHeic++;
+        continue;
+      }
+      if (!file.type.startsWith("image/")) {
+        skippedOther++;
+        continue;
+      }
+      if (file.size > MAX_BYTES) {
+        skippedTooBig++;
+        continue;
+      }
+      try {
+        accepted.push(await downscaleImage(file));
+      } catch {
+        skippedOther++;
+      }
+    }
+
+    if (accepted.length > 0) {
+      setPendingUploads(accepted);
+    }
+
+    const skippedTotal = skippedHeic + skippedTooBig + skippedOther;
+    if (skippedTotal > 0) {
+      const parts: string[] = [];
+      if (skippedHeic > 0) parts.push(`${skippedHeic} HEIC (share as JPEG/PNG)`);
+      if (skippedTooBig > 0) parts.push(`${skippedTooBig} over 25MB`);
+      if (skippedOther > 0) parts.push(`${skippedOther} unsupported`);
+      setUploadStatus({ text: `Skipped: ${parts.join(" · ")}`, tone: "warn" });
+      setTimeout(() => setUploadStatus(null), 5000);
+    }
+
+    setIsUploading(false);
+    e.target.value = "";
+  }
+
+  function removePending(index: number) {
+    setPendingUploads((prev) => {
+      const url = prev[index];
+      if (url) URL.revokeObjectURL(url);
+      return prev.filter((_, i) => i !== index);
+    });
+  }
+
+  function confirmPending() {
+    if (pendingUploads.length === 0) return;
+    const count = pendingUploads.length;
+    setUploadedPhotos((prev) => [...prev, ...pendingUploads]);
+    setPendingUploads([]);
+    setUploadStatus({ text: `Added ${count} photo${count > 1 ? "s" : ""} to the gallery ✓`, tone: "success" });
+    setTimeout(() => setUploadStatus(null), 4000);
+  }
+
+  function cancelPending() {
+    pendingUploads.forEach((url) => URL.revokeObjectURL(url));
+    setPendingUploads([]);
+  }
 
   useEffect(() => {
     const timer = setTimeout(() => setShowIntro(false), 4000);
@@ -289,9 +406,9 @@ export default function ChomkaitalaSCFanPortal() {
               initial={{ scale: 0.6, opacity: 0, rotate: -8 }}
               animate={{ scale: 1, opacity: 1, rotate: 0 }}
               transition={{ type: "spring", stiffness: 180, damping: 14, delay: 0.1 }}
-              className="relative z-10 text-7xl sm:text-8xl"
+              className="relative z-10"
             >
-              🏆
+              <ClubLogo className="h-28 w-28 sm:h-36 sm:w-36" />
             </motion.div>
 
             <motion.p
@@ -300,7 +417,7 @@ export default function ChomkaitalaSCFanPortal() {
               transition={{ delay: 0.45, duration: 0.5 }}
               className="relative z-10 mt-6 text-xs font-black uppercase tracking-[0.5em] text-yellow-200 sm:text-sm"
             >
-              SSL 2026 · Champions
+              🏆 SSL 2026 · Champions
             </motion.p>
 
             <motion.h1
@@ -311,7 +428,10 @@ export default function ChomkaitalaSCFanPortal() {
             >
               <span className="text-white">Chomkaitala </span>
               <span className="bg-gradient-to-r from-yellow-200 via-yellow-300 to-amber-400 bg-clip-text text-transparent drop-shadow-[0_0_20px_rgba(250,204,21,0.5)]">
-                Sporting Club
+                SC
+              </span>
+              <span className="mt-3 block text-lg font-bold tracking-[0.3em] text-yellow-200/90 sm:text-2xl">
+                SSL WINNER · 2026
               </span>
             </motion.h1>
 
@@ -344,12 +464,17 @@ export default function ChomkaitalaSCFanPortal() {
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
+            className="flex flex-col items-center"
           >
-            <p className="inline-flex rounded-full border border-yellow-400/40 bg-yellow-400/10 px-4 py-2 text-xs font-semibold text-yellow-200 shadow-[0_0_25px_rgba(250,204,21,0.18)] sm:text-sm">
-              Official Unofficial Fan Zone
+            <ClubLogo className="h-24 w-24 sm:h-28 sm:w-28 md:h-32 md:w-32" />
+            <p className="mt-5 inline-flex rounded-full border border-yellow-400/40 bg-yellow-400/10 px-4 py-2 text-xs font-semibold text-yellow-200 shadow-[0_0_25px_rgba(250,204,21,0.18)] sm:text-sm">
+              🏆 SSL Champions · 2026
             </p>
-            <h1 className="mt-6 text-4xl font-black leading-tight tracking-tight sm:text-5xl md:text-7xl">
-              Chomkaitala <span className="text-yellow-300">Sporting Club</span>
+            <h1 className="mt-6 text-3xl font-black leading-tight tracking-tight sm:text-5xl md:text-6xl">
+              Chomkaitala <span className="text-yellow-300">SC</span>
+              <span className="block text-yellow-200/90 text-xl font-bold tracking-[0.2em] sm:text-2xl md:text-3xl mt-3">
+                SSL WINNER · 2026
+              </span>
             </h1>
             <p className="mx-auto mt-5 max-w-2xl text-base text-slate-200 sm:text-lg md:text-2xl">
               Just soccer, just fun, just good times.
@@ -440,27 +565,82 @@ export default function ChomkaitalaSCFanPortal() {
               Snapshots straight from the pitch, the sidelines, and the celebrations.
             </p>
           </div>
-          <div className="mt-6 max-h-[60vh] overflow-y-auto rounded-2xl border border-yellow-400/15 bg-black/20 p-3 [scrollbar-color:rgba(250,204,21,0.5)_transparent] [scrollbar-width:thin] sm:max-h-[65vh]">
+
+          <div className="mt-5 flex flex-col items-center gap-2">
+            <label
+              className={`inline-flex items-center gap-2 rounded-2xl px-5 py-3 text-sm font-black text-black shadow-[0_0_25px_rgba(250,204,21,0.35)] transition sm:text-base ${
+                isUploading
+                  ? "cursor-wait bg-yellow-300/70"
+                  : "cursor-pointer bg-yellow-400 hover:bg-yellow-300 hover:shadow-[0_0_35px_rgba(250,204,21,0.5)]"
+              }`}
+            >
+              {isUploading ? (
+                <>
+                  <span className="inline-block h-4 w-4 animate-spin rounded-full border-2 border-black border-t-transparent" />
+                  Processing…
+                </>
+              ) : (
+                <>
+                  <span aria-hidden>📸</span> Upload your photo
+                </>
+              )}
+              <input
+                type="file"
+                accept="image/jpeg,image/png,image/webp,image/gif"
+                multiple
+                disabled={isUploading}
+                onChange={handlePhotoUpload}
+                className="hidden"
+              />
+            </label>
+            <p className="text-[10px] text-slate-400 sm:text-xs">
+              JPEG / PNG / WebP / GIF · auto-resized · max 25 MB each · this visit only.
+            </p>
+            {uploadStatus && (
+              <p
+                className={`mt-1 rounded-full border px-3 py-1 text-xs font-bold ${
+                  uploadStatus.tone === "success"
+                    ? "border-green-400/40 bg-green-400/10 text-green-200"
+                    : "border-amber-400/40 bg-amber-400/10 text-amber-200"
+                }`}
+              >
+                {uploadStatus.text}
+              </p>
+            )}
+          </div>
+
+          <div className="mt-5 max-h-[60vh] overflow-y-auto rounded-2xl border border-yellow-400/15 bg-black/20 p-3 [scrollbar-color:rgba(250,204,21,0.5)_transparent] [scrollbar-width:thin] sm:max-h-[65vh]">
             <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6">
-              {galleryImages.map((src, i) => (
-                <button
-                  key={src}
-                  type="button"
-                  onClick={() => setSelectedPhoto(i)}
-                  className="group relative aspect-square overflow-hidden rounded-2xl border border-yellow-400/20 bg-black/40 transition hover:border-yellow-300/60 hover:shadow-[0_0_25px_rgba(250,204,21,0.25)] focus:outline-none focus:ring-2 focus:ring-yellow-300"
-                >
-                  <img
-                    src={src}
-                    alt={`CSC moment ${i + 1}`}
-                    loading="lazy"
-                    className="h-full w-full object-cover transition duration-500 group-hover:scale-110"
-                  />
-                </button>
-              ))}
+              {allPhotos.map((src, i) => {
+                const isFanUpload = i >= galleryImages.length;
+                return (
+                  <button
+                    key={`${src}-${i}`}
+                    type="button"
+                    onClick={() => setSelectedPhoto(i)}
+                    className="group relative aspect-square overflow-hidden rounded-2xl border border-yellow-400/20 bg-black/40 transition hover:border-yellow-300/60 hover:shadow-[0_0_25px_rgba(250,204,21,0.25)] focus:outline-none focus:ring-2 focus:ring-yellow-300"
+                  >
+                    <img
+                      src={src}
+                      alt={isFanUpload ? `Fan upload ${i - galleryImages.length + 1}` : `CSC moment ${i + 1}`}
+                      loading="lazy"
+                      className="h-full w-full object-cover transition duration-500 group-hover:scale-110"
+                    />
+                    {isFanUpload && (
+                      <span className="absolute left-1.5 top-1.5 rounded-full bg-yellow-400 px-2 py-0.5 text-[9px] font-black uppercase tracking-wider text-black">
+                        Fan
+                      </span>
+                    )}
+                  </button>
+                );
+              })}
             </div>
           </div>
           <p className="mt-3 text-center text-xs text-slate-400">
-            {galleryImages.length} photos · scroll inside to see them all
+            {allPhotos.length} photos · scroll inside to see them all
+            {uploadedPhotos.length > 0 && (
+              <> · <span className="text-yellow-300">{uploadedPhotos.length} from fans</span></>
+            )}
           </p>
         </section>
 
@@ -649,6 +829,72 @@ export default function ChomkaitalaSCFanPortal() {
       </AnimatePresence>
 
       <AnimatePresence>
+        {pendingUploads.length > 0 && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-50 grid place-items-center bg-black/80 p-4 backdrop-blur-sm"
+            onClick={cancelPending}
+          >
+            <motion.div
+              initial={{ scale: 0.92, y: 20 }}
+              animate={{ scale: 1, y: 0 }}
+              exit={{ scale: 0.92, y: 20 }}
+              onClick={(e) => e.stopPropagation()}
+              className="relative max-h-[90vh] w-full max-w-3xl overflow-auto rounded-[2rem] border border-yellow-400/30 bg-gradient-to-br from-[#061126] via-[#071a3f] to-black p-6 shadow-[0_0_45px_rgba(250,204,21,0.22)] sm:p-7"
+            >
+              <div className="text-center">
+                <p className="text-xs font-black uppercase tracking-[0.3em] text-yellow-200 sm:text-sm">Preview</p>
+                <h2 className="mt-2 text-2xl font-black text-yellow-300 sm:text-3xl">
+                  Check before adding
+                </h2>
+                <p className="mx-auto mt-2 max-w-md text-sm text-slate-300">
+                  Tap × on any photo to drop it. Hit <strong className="text-yellow-200">Add to gallery</strong> when you&apos;re happy.
+                </p>
+              </div>
+
+              <div className="mt-6 grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4">
+                {pendingUploads.map((src, i) => (
+                  <div
+                    key={src}
+                    className="relative aspect-square overflow-hidden rounded-2xl border border-yellow-400/25 bg-black/40"
+                  >
+                    <img src={src} alt={`Pending upload ${i + 1}`} className="h-full w-full object-cover" />
+                    <button
+                      type="button"
+                      onClick={() => removePending(i)}
+                      aria-label="Remove this photo"
+                      className="absolute right-1.5 top-1.5 grid h-7 w-7 place-items-center rounded-full bg-black/80 text-lg leading-none text-white shadow-lg hover:bg-red-500"
+                    >
+                      ×
+                    </button>
+                  </div>
+                ))}
+              </div>
+
+              <div className="mt-6 flex flex-col-reverse gap-3 sm:flex-row sm:justify-end">
+                <button
+                  type="button"
+                  onClick={cancelPending}
+                  className="rounded-2xl border border-yellow-400/30 bg-black/60 px-5 py-3 text-sm font-bold text-slate-200 transition hover:border-yellow-300 hover:text-white"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="button"
+                  onClick={confirmPending}
+                  className="rounded-2xl bg-yellow-400 px-5 py-3 text-sm font-black text-black shadow-[0_0_25px_rgba(250,204,21,0.35)] transition hover:bg-yellow-300 hover:shadow-[0_0_35px_rgba(250,204,21,0.5)]"
+                >
+                  Add {pendingUploads.length} to gallery
+                </button>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      <AnimatePresence>
         {selectedPhoto !== null && (
           <motion.div
             initial={{ opacity: 0 }}
@@ -660,7 +906,7 @@ export default function ChomkaitalaSCFanPortal() {
             <button
               onClick={(e) => {
                 e.stopPropagation();
-                setSelectedPhoto((p) => (p === null ? null : (p - 1 + galleryImages.length) % galleryImages.length));
+                setSelectedPhoto((p) => (p === null ? null : (p - 1 + allPhotos.length) % allPhotos.length));
               }}
               aria-label="Previous photo"
               className="absolute left-4 top-1/2 z-10 -translate-y-1/2 rounded-full bg-black/70 px-4 py-2 text-2xl leading-none text-white hover:bg-black sm:left-8"
@@ -670,7 +916,7 @@ export default function ChomkaitalaSCFanPortal() {
             <button
               onClick={(e) => {
                 e.stopPropagation();
-                setSelectedPhoto((p) => (p === null ? null : (p + 1) % galleryImages.length));
+                setSelectedPhoto((p) => (p === null ? null : (p + 1) % allPhotos.length));
               }}
               aria-label="Next photo"
               className="absolute right-4 top-1/2 z-10 -translate-y-1/2 rounded-full bg-black/70 px-4 py-2 text-2xl leading-none text-white hover:bg-black sm:right-8"
@@ -690,16 +936,60 @@ export default function ChomkaitalaSCFanPortal() {
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.95, opacity: 0 }}
               onClick={(e) => e.stopPropagation()}
-              src={galleryImages[selectedPhoto]}
-              alt={`CSC moment ${selectedPhoto + 1}`}
+              src={allPhotos[selectedPhoto]}
+              alt={selectedPhoto >= galleryImages.length ? `Fan upload ${selectedPhoto - galleryImages.length + 1}` : `CSC moment ${selectedPhoto + 1}`}
               className="max-h-[90vh] max-w-[95vw] rounded-2xl border border-yellow-400/30 object-contain shadow-[0_0_45px_rgba(250,204,21,0.22)]"
             />
             <p className="absolute bottom-4 left-1/2 -translate-x-1/2 rounded-full bg-black/70 px-4 py-1 text-xs font-bold text-yellow-200">
-              {selectedPhoto + 1} / {galleryImages.length}
+              {selectedPhoto + 1} / {allPhotos.length}
             </p>
           </motion.div>
         )}
       </AnimatePresence>
+    </div>
+  );
+}
+
+function ClubLogo({ className = "" }: { className?: string }) {
+  return (
+    <div
+      className={`relative grid place-items-center rounded-full bg-gradient-to-br from-yellow-300 via-amber-400 to-yellow-500 p-[3px] shadow-[0_0_45px_rgba(250,204,21,0.55)] ${className}`}
+    >
+      <div
+        className="relative grid h-full w-full place-items-center rounded-full bg-gradient-to-br from-[#061126] via-[#0a1f4a] to-black"
+        style={{ containerType: "size" }}
+      >
+        <svg viewBox="0 0 100 100" className="absolute inset-0 h-full w-full" aria-hidden focusable="false">
+          <defs>
+            <path id="csc-arc-top" d="M 14 50 A 36 36 0 0 1 86 50" fill="none" />
+          </defs>
+          <circle cx="50" cy="50" r="46" fill="none" stroke="rgba(250,204,21,0.55)" strokeWidth="0.7" />
+          <circle cx="50" cy="50" r="40" fill="none" stroke="rgba(250,204,21,0.25)" strokeWidth="0.4" />
+          <text fill="#fde68a" fontSize="8.5" fontWeight="900" letterSpacing="1.6">
+            <textPath href="#csc-arc-top" startOffset="50%" textAnchor="middle">
+              CHOMKAITALA SC
+            </textPath>
+          </text>
+          <polygon points="20,50 24,48 22,52" fill="#facc15" />
+          <polygon points="80,50 76,48 78,52" fill="#facc15" />
+          <polygon points="50,82 47,76 53,76" fill="#facc15" />
+        </svg>
+        <div className="relative flex flex-col items-center">
+          <span
+            className="bg-gradient-to-b from-yellow-200 via-yellow-300 to-amber-400 bg-clip-text font-black leading-none tracking-tight text-transparent drop-shadow-[0_2px_6px_rgba(250,204,21,0.45)]"
+            style={{ fontSize: "28cqh" }}
+          >
+            CSC
+          </span>
+          <span className="mt-[5%] h-[1px] w-[28%] bg-yellow-400/70" />
+          <span
+            className="mt-[3%] font-bold uppercase tracking-[0.25em] text-yellow-200"
+            style={{ fontSize: "8cqh" }}
+          >
+            Estd · 2026
+          </span>
+        </div>
+      </div>
     </div>
   );
 }

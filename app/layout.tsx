@@ -13,8 +13,8 @@ const robotoMono = Roboto_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Chomkaitala Sporting Club",
-  description: "Official Unofficial Fan Zone — players, manager, sponsor, match drama, and chai.",
+  title: "Chomkaitala SC · SSL Winner 2026",
+  description: "Chomkaitala SC — SSL 2026 champions. Players, match results, gallery, and the fan zone.",
 };
 
 export default function RootLayout({
