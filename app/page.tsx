@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 
 type TeamMember = {
@@ -234,6 +234,16 @@ export default function ChomkaitalaSCFanPortal() {
   const [fanName, setFanName] = useState("");
   const [fanMessage, setFanMessage] = useState("");
   const [messages, setMessages] = useState(fanTalk);
+  const [showIntro, setShowIntro] = useState(true);
+
+  useEffect(() => {
+    const timer = setTimeout(() => setShowIntro(false), 4000);
+    return () => clearTimeout(timer);
+  }, []);
+
+  function dismissIntro() {
+    setShowIntro(false);
+  }
 
   function submitFanTalk(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -247,6 +257,85 @@ export default function ChomkaitalaSCFanPortal() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-[#061126] via-[#071a3f] to-black text-white">
+      <AnimatePresence>
+        {showIntro && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.4 }}
+            onClick={dismissIntro}
+            className="fixed inset-0 z-[60] flex cursor-pointer flex-col items-center justify-center overflow-hidden bg-gradient-to-br from-[#061126] via-[#0a1f4a] to-black"
+          >
+            <div
+              className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_center,_rgba(250,204,21,0.35),_transparent_55%)]"
+              aria-hidden
+            />
+            <div className="pointer-events-none absolute inset-0 opacity-40">
+              {Array.from({ length: 18 }).map((_, i) => (
+                <motion.span
+                  key={i}
+                  initial={{ y: -50, x: `${(i * 53) % 100}%`, opacity: 0, rotate: 0 }}
+                  animate={{ y: "110vh", opacity: [0, 1, 1, 0], rotate: 360 }}
+                  transition={{ duration: 2.6 + (i % 5) * 0.3, delay: i * 0.08, ease: "easeIn", repeat: Infinity, repeatDelay: 0.6 }}
+                  className="absolute text-2xl"
+                >
+                  {["🎉", "✨", "💛", "🏆", "⚽"][i % 5]}
+                </motion.span>
+              ))}
+            </div>
+
+            <motion.div
+              initial={{ scale: 0.6, opacity: 0, rotate: -8 }}
+              animate={{ scale: 1, opacity: 1, rotate: 0 }}
+              transition={{ type: "spring", stiffness: 180, damping: 14, delay: 0.1 }}
+              className="relative z-10 text-7xl sm:text-8xl"
+            >
+              🏆
+            </motion.div>
+
+            <motion.p
+              initial={{ y: 20, opacity: 0 }}
+              animate={{ y: 0, opacity: 1 }}
+              transition={{ delay: 0.45, duration: 0.5 }}
+              className="relative z-10 mt-6 text-xs font-black uppercase tracking-[0.5em] text-yellow-200 sm:text-sm"
+            >
+              SSL 2026 · Champions
+            </motion.p>
+
+            <motion.h1
+              initial={{ y: 30, opacity: 0 }}
+              animate={{ y: 0, opacity: 1 }}
+              transition={{ delay: 0.6, duration: 0.55 }}
+              className="relative z-10 mt-3 px-6 text-center text-4xl font-black leading-tight sm:text-6xl md:text-7xl"
+            >
+              <span className="text-white">Chomkaitala </span>
+              <span className="bg-gradient-to-r from-yellow-200 via-yellow-300 to-amber-400 bg-clip-text text-transparent drop-shadow-[0_0_20px_rgba(250,204,21,0.5)]">
+                Sporting Club
+              </span>
+            </motion.h1>
+
+            <motion.p
+              initial={{ y: 20, opacity: 0 }}
+              animate={{ y: 0, opacity: 1 }}
+              transition={{ delay: 0.85, duration: 0.5 }}
+              className="relative z-10 mt-4 max-w-xl px-6 text-center text-base text-slate-200 sm:text-lg"
+            >
+              Fan favorite. SSL winner. Champions of Doyle Park. 💛
+            </motion.p>
+
+            <motion.p
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 2.4, duration: 0.4 }}
+              className="absolute bottom-6 z-10 text-xs uppercase tracking-[0.3em] text-yellow-200/70"
+            >
+              Tap anywhere to continue
+            </motion.p>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
       <section className="relative overflow-hidden">
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,_rgba(250,204,21,0.22),_transparent_34%),radial-gradient(circle_at_bottom_right,_rgba(14,27,59,0.9),_transparent_35%)]" />
         <div className="absolute inset-0 opacity-20 bg-[linear-gradient(115deg,_transparent_0%,_rgba(250,204,21,0.18)_45%,_transparent_70%)]" />
