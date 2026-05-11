@@ -231,18 +231,34 @@ const fanTalk = [
 export default function ChomkaitalaSCFanPortal() {
   const [selectedPlayer, setSelectedPlayer] = useState<TeamMember | null>(null);
   const [selectedPhoto, setSelectedPhoto] = useState<number | null>(null);
-  const [uploadedPhotos, setUploadedPhotos] = useState<string[]>([]);
-  const [pendingUploads, setPendingUploads] = useState<string[]>([]);
+  const [cloudPhotos, setCloudPhotos] = useState<string[]>([]);
+  const [pendingUploads, setPendingUploads] = useState<{ url: string; file: File }[]>([]);
   const [uploadStatus, setUploadStatus] = useState<{ text: string; tone: "info" | "warn" | "success" } | null>(null);
   const [isUploading, setIsUploading] = useState(false);
+  const [isPublishing, setIsPublishing] = useState(false);
+
+  useEffect(() => {
+    let cancelled = false;
+    fetch("/api/gallery")
+      .then((r) => r.json())
+      .then((data: { urls?: string[] }) => {
+        if (!cancelled && Array.isArray(data.urls)) {
+          setCloudPhotos(data.urls);
+        }
+      })
+      .catch(() => {});
+    return () => {
+      cancelled = true;
+    };
+  }, []);
   const [fanName, setFanName] = useState("");
   const [fanMessage, setFanMessage] = useState("");
   const [messages, setMessages] = useState(fanTalk);
   const [showIntro, setShowIntro] = useState(true);
 
-  const allPhotos = [...galleryImages, ...uploadedPhotos];
+  const allPhotos = [...galleryImages, ...cloudPhotos];
 
-  function downscaleImage(file: File, maxDim = 1600): Promise<string> {
+  function downscaleImage(file: File, maxDim = 1600): Promise<{ url: string; file: File }> {
     return new Promise((resolve, reject) => {
       const reader = new FileReader();
       reader.onload = (ev) => {
@@ -250,7 +266,7 @@ export default function ChomkaitalaSCFanPortal() {
         img.onload = () => {
           const longest = Math.max(img.width, img.height);
           if (longest <= maxDim) {
-            resolve(URL.createObjectURL(file));
+            resolve({ url: URL.createObjectURL(file), file });
             return;
           }
           const scale = maxDim / longest;
@@ -266,7 +282,14 @@ export default function ChomkaitalaSCFanPortal() {
           }
           ctx.drawImage(img, 0, 0, w, h);
           canvas.toBlob(
-            (blob) => (blob ? resolve(URL.createObjectURL(blob)) : reject(new Error("toBlob failed"))),
+            (blob) => {
+              if (!blob) {
+                reject(new Error("toBlob failed"));
+                return;
+              }
+              const shrunk = new File([blob], file.name.replace(/\.[^.]+$/, "") + ".jpg", { type: "image/jpeg" });
+              resolve({ url: URL.createObjectURL(blob), file: shrunk });
+            },
             "image/jpeg",
             0.88,
           );
@@ -288,7 +311,7 @@ export default function ChomkaitalaSCFanPortal() {
     let skippedHeic = 0;
     let skippedTooBig = 0;
     let skippedOther = 0;
-    const accepted: string[] = [];
+    const accepted: { url: string; file: File }[] = [];
     const MAX_BYTES = 25 * 1024 * 1024;
 
     for (const file of Array.from(files)) {
@@ -333,23 +356,60 @@ export default function ChomkaitalaSCFanPortal() {
 
   function removePending(index: number) {
     setPendingUploads((prev) => {
-      const url = prev[index];
-      if (url) URL.revokeObjectURL(url);
+      const item = prev[index];
+      if (item) URL.revokeObjectURL(item.url);
       return prev.filter((_, i) => i !== index);
     });
   }
 
-  function confirmPending() {
-    if (pendingUploads.length === 0) return;
-    const count = pendingUploads.length;
-    setUploadedPhotos((prev) => [...prev, ...pendingUploads]);
+  async function confirmPending() {
+    if (pendingUploads.length === 0 || isPublishing) return;
+    setIsPublishing(true);
+
+    const newCloudUrls: string[] = [];
+    let failed = 0;
+
+    for (const item of pendingUploads) {
+      const fd = new FormData();
+      fd.append("file", item.file);
+      try {
+        const res = await fetch("/api/upload", { method: "POST", body: fd });
+        const data = await res.json();
+        if (res.ok && data.url) {
+          newCloudUrls.push(data.url);
+        } else {
+          failed++;
+          console.warn("Upload rejected:", data?.error);
+        }
+      } catch {
+        failed++;
+      }
+    }
+
+    pendingUploads.forEach((p) => URL.revokeObjectURL(p.url));
     setPendingUploads([]);
-    setUploadStatus({ text: `Added ${count} photo${count > 1 ? "s" : ""} to the gallery ✓`, tone: "success" });
-    setTimeout(() => setUploadStatus(null), 4000);
+
+    if (newCloudUrls.length > 0) {
+      setCloudPhotos((prev) => [...prev, ...newCloudUrls]);
+    }
+
+    if (newCloudUrls.length > 0 && failed === 0) {
+      setUploadStatus({
+        text: `Published ${newCloudUrls.length} photo${newCloudUrls.length > 1 ? "s" : ""} — visible to everyone now ✓`,
+        tone: "success",
+      });
+    } else if (newCloudUrls.length > 0 && failed > 0) {
+      setUploadStatus({ text: `Published ${newCloudUrls.length}, ${failed} failed`, tone: "warn" });
+    } else {
+      setUploadStatus({ text: `Upload failed. Service may not be configured yet.`, tone: "warn" });
+    }
+    setTimeout(() => setUploadStatus(null), 6000);
+    setIsPublishing(false);
   }
 
   function cancelPending() {
-    pendingUploads.forEach((url) => URL.revokeObjectURL(url));
+    if (isPublishing) return;
+    pendingUploads.forEach((p) => URL.revokeObjectURL(p.url));
     setPendingUploads([]);
   }
 
@@ -638,8 +698,8 @@ export default function ChomkaitalaSCFanPortal() {
           </div>
           <p className="mt-3 text-center text-xs text-slate-400">
             {allPhotos.length} photos · scroll inside to see them all
-            {uploadedPhotos.length > 0 && (
-              <> · <span className="text-yellow-300">{uploadedPhotos.length} from fans</span></>
+            {cloudPhotos.length > 0 && (
+              <> · <span className="text-yellow-300">{cloudPhotos.length} from fans</span></>
             )}
           </p>
         </section>
@@ -855,17 +915,18 @@ export default function ChomkaitalaSCFanPortal() {
               </div>
 
               <div className="mt-6 grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4">
-                {pendingUploads.map((src, i) => (
+                {pendingUploads.map((item, i) => (
                   <div
-                    key={src}
+                    key={item.url}
                     className="relative aspect-square overflow-hidden rounded-2xl border border-yellow-400/25 bg-black/40"
                   >
-                    <img src={src} alt={`Pending upload ${i + 1}`} className="h-full w-full object-cover" />
+                    <img src={item.url} alt={`Pending upload ${i + 1}`} className="h-full w-full object-cover" />
                     <button
                       type="button"
                       onClick={() => removePending(i)}
+                      disabled={isPublishing}
                       aria-label="Remove this photo"
-                      className="absolute right-1.5 top-1.5 grid h-7 w-7 place-items-center rounded-full bg-black/80 text-lg leading-none text-white shadow-lg hover:bg-red-500"
+                      className="absolute right-1.5 top-1.5 grid h-7 w-7 place-items-center rounded-full bg-black/80 text-lg leading-none text-white shadow-lg hover:bg-red-500 disabled:opacity-40"
                     >
                       ×
                     </button>
@@ -877,16 +938,29 @@ export default function ChomkaitalaSCFanPortal() {
                 <button
                   type="button"
                   onClick={cancelPending}
-                  className="rounded-2xl border border-yellow-400/30 bg-black/60 px-5 py-3 text-sm font-bold text-slate-200 transition hover:border-yellow-300 hover:text-white"
+                  disabled={isPublishing}
+                  className="rounded-2xl border border-yellow-400/30 bg-black/60 px-5 py-3 text-sm font-bold text-slate-200 transition hover:border-yellow-300 hover:text-white disabled:opacity-50"
                 >
                   Cancel
                 </button>
                 <button
                   type="button"
                   onClick={confirmPending}
-                  className="rounded-2xl bg-yellow-400 px-5 py-3 text-sm font-black text-black shadow-[0_0_25px_rgba(250,204,21,0.35)] transition hover:bg-yellow-300 hover:shadow-[0_0_35px_rgba(250,204,21,0.5)]"
+                  disabled={isPublishing}
+                  className={`inline-flex items-center justify-center gap-2 rounded-2xl px-5 py-3 text-sm font-black text-black shadow-[0_0_25px_rgba(250,204,21,0.35)] transition ${
+                    isPublishing
+                      ? "cursor-wait bg-yellow-300/70"
+                      : "bg-yellow-400 hover:bg-yellow-300 hover:shadow-[0_0_35px_rgba(250,204,21,0.5)]"
+                  }`}
                 >
-                  Add {pendingUploads.length} to gallery
+                  {isPublishing ? (
+                    <>
+                      <span className="inline-block h-4 w-4 animate-spin rounded-full border-2 border-black border-t-transparent" />
+                      Publishing…
+                    </>
+                  ) : (
+                    <>Publish {pendingUploads.length} to gallery</>
+                  )}
                 </button>
               </div>
             </motion.div>
