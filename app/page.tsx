@@ -198,7 +198,7 @@ const matches = [
     name: "Group Match",
     opponent: "Old Monk",
     date: "May 9, 2026",
-    time: "3 PM Onwards",
+    time: "4:15 PM",
     venue: "Doyle Park",
     address: "8175 Regents Rd, San Diego, CA 92122",
     result: {
@@ -211,7 +211,7 @@ const matches = [
     name: "Final Match",
     opponent: "TBD",
     date: "May 9, 2026",
-    time: "4 PM Onwords",
+    time: "5:20 PM",
     venue: "Doyle Park",
     address: "8175 Regents Rd, San Diego, CA 92122",
     result: {

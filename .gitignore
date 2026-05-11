@@ -39,3 +39,7 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# media not displayed on the site
+/public/images/gallery/*.mp4
+/public/images/gallery/*.zip
