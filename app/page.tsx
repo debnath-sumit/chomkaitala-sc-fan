@@ -174,25 +174,7 @@ quote: "I add flair on the field and flavor in the kitchen",
   },
 ];
 
-const supportInfo = {
-  paypalHandle: "Sdebnath007",
-  paypalEmail: "debnath_sumit@outlook.com",
-  suggestedAmounts: [5, 10, 25],
-  currencySymbol: "$",
-};
-
-type Donator = { name: string };
-
-const donators: Donator[] = [
-  { name: "Purabi Di" },
-  { name: "Usha Di" },
-  { name: "Bhaswati Di" },
-  { name: "Diya" },
-  { name: "Ankur" },
-  { name: "Sandy" },
-  { name: "Proma" },
-  { name: "Sucheta" },
-];
+const galleryImages = Array.from({ length: 24 }, (_, i) => `/images/gallery/gallery-${String(i + 1).padStart(2, "0")}.jpeg`);
 
 const sponsor = {
   name: "BAHAR Indian Restaurant & Catering",
@@ -204,11 +186,10 @@ const sponsor = {
 
 const announcements = [
   {
-    icon: "📣",
-    tag: "Fan Perk",
-    title: "Special Discount from BAHAR",
-    body: "Show your CSC fan support and unlock an exclusive discount from our official sponsor Bahar.",
-    endsOn: "May 8, 2026",
+    icon: "🎉",
+    tag: "Chomkaitala Presents",
+    title: "SSL Success Party",
+    body: "Date and Venue: TBD — stay tuned, details dropping soon!",
   },
 ];
 
@@ -220,6 +201,11 @@ const matches = [
     time: "3 PM Onwards",
     venue: "Doyle Park",
     address: "8175 Regents Rd, San Diego, CA 92122",
+    result: {
+      summary: "CSC 3 - 0 Old Monk",
+      outcome: "Won",
+      scorers: "Suman ⚽⚽ · Shrish ⚽",
+    },
   },
   {
     name: "Final Match",
@@ -228,6 +214,11 @@ const matches = [
     time: "4 PM Onwords",
     venue: "Doyle Park",
     address: "8175 Regents Rd, San Diego, CA 92122",
+    result: {
+      summary: "0 - 0 (Goalless Draw)",
+      outcome: "Joint Winners",
+      scorers: "EC declared both teams as winners",
+    },
   },
 ];
 
@@ -239,6 +230,7 @@ const fanTalk = [
 
 export default function ChomkaitalaSCFanPortal() {
   const [selectedPlayer, setSelectedPlayer] = useState<TeamMember | null>(null);
+  const [selectedPhoto, setSelectedPhoto] = useState<number | null>(null);
   const [fanName, setFanName] = useState("");
   const [fanMessage, setFanMessage] = useState("");
   const [messages, setMessages] = useState(fanTalk);
@@ -278,25 +270,102 @@ export default function ChomkaitalaSCFanPortal() {
       </section>
 
       <main className="mx-auto max-w-7xl px-5 py-12">
-        <section className="mb-12 overflow-hidden rounded-[2rem] border border-yellow-400/30 bg-gradient-to-br from-[#071a3f]/80 via-[#061126]/80 to-black p-6 shadow-[0_0_35px_rgba(250,204,21,0.18)] sm:p-8">
+        {announcements.length > 0 && (
+          <div className="mb-12 grid gap-4">
+            {announcements.map((item) => (
+              <div
+                key={item.title}
+                className="relative overflow-hidden rounded-[1.75rem] border border-yellow-400/40 bg-gradient-to-br from-yellow-400/20 via-[#071a3f]/80 to-black p-5 shadow-[0_0_35px_rgba(250,204,21,0.18)] sm:p-6"
+              >
+                <div
+                  className="pointer-events-none absolute -right-10 -top-10 h-40 w-40 rounded-full bg-yellow-400/20 blur-3xl"
+                  aria-hidden
+                />
+                <div className="relative flex items-start gap-4">
+                  <span className="grid h-12 w-12 shrink-0 place-items-center rounded-2xl border border-yellow-400/40 bg-yellow-400/10 text-2xl">
+                    {item.icon}
+                  </span>
+                  <div>
+                    <p className="text-[10px] font-black uppercase tracking-[0.3em] text-yellow-300 sm:text-xs">
+                      {item.tag}
+                    </p>
+                    <h3 className="mt-1 text-xl font-black text-white sm:text-2xl">{item.title}</h3>
+                    <p className="mt-2 max-w-2xl text-sm text-slate-200 sm:text-base">{item.body}</p>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+
+        <section className="mb-12 rounded-[2rem] border border-yellow-400/30 bg-[#071a3f]/65 p-6 shadow-[0_0_35px_rgba(250,204,21,0.18)] sm:p-8">
           <div className="text-center">
-            <p className="text-xs font-black uppercase tracking-[0.3em] text-yellow-200 sm:text-sm">Wall of Thanks</p>
+            <p className="text-xs font-black uppercase tracking-[0.3em] text-yellow-200 sm:text-sm">Score Update</p>
             <h2 className="mt-2 text-2xl font-black text-yellow-300 sm:text-3xl md:text-4xl">
-              Thank You, Top Fans 💛
+              Match Day Results
             </h2>
             <p className="mx-auto mt-3 max-w-2xl text-sm text-slate-300 sm:text-base">
-              Huge shout-out to the fans who chipped in for jerseys, footballs, and post-match chai. You keep CSC running.
+              Latest from the pitch — group stage to the final.
             </p>
           </div>
+          <div className="mt-6 grid gap-4 md:grid-cols-2">
+            {matches.map((match) => (
+              <div key={match.name} className="rounded-3xl border border-yellow-400/20 bg-black/70 p-5">
+                <div className="flex items-center justify-between gap-3">
+                  <p className="text-sm font-bold uppercase tracking-[0.25em] text-yellow-300">{match.name}</p>
+                  {match.result && (
+                    <span className="rounded-full border border-yellow-400/40 bg-yellow-400/15 px-3 py-1 text-[10px] font-black uppercase tracking-[0.2em] text-yellow-200">
+                      {match.result.outcome}
+                    </span>
+                  )}
+                </div>
+                <h3 className="mt-2 text-2xl font-black">CSC vs {match.opponent}</h3>
+                {match.result && (
+                  <div className="mt-3 rounded-2xl border border-yellow-400/20 bg-yellow-400/5 p-3">
+                    <p className="text-xl font-black text-yellow-200">{match.result.summary}</p>
+                    <p className="mt-1 text-sm text-slate-200">{match.result.scorers}</p>
+                  </div>
+                )}
+                <p className="mt-3 text-slate-200">{match.date} · {match.time}</p>
+                <p className="text-yellow-200/80">{match.venue}</p>
+                <a
+                  href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(`${match.venue}, ${match.address}`)}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="mt-1 inline-block text-sm text-slate-300 underline-offset-2 hover:text-yellow-200 hover:underline"
+                >
+                  {match.address}
+                </a>
+              </div>
+            ))}
+          </div>
+        </section>
 
-          <div className="mt-6 flex flex-wrap justify-center gap-2">
-            {donators.map((d) => (
-              <span
-                key={d.name}
-                className="rounded-full border border-yellow-400/30 bg-black/60 px-4 py-2 text-sm font-semibold text-yellow-100"
+        <section className="mb-12 rounded-[2rem] border border-yellow-400/30 bg-[#071a3f]/65 p-6 shadow-[0_0_35px_rgba(250,204,21,0.18)] sm:p-8">
+          <div className="text-center">
+            <p className="text-xs font-black uppercase tracking-[0.3em] text-yellow-200 sm:text-sm">Photo Gallery</p>
+            <h2 className="mt-2 text-2xl font-black text-yellow-300 sm:text-3xl md:text-4xl">
+              Moments from Match Day 📸
+            </h2>
+            <p className="mx-auto mt-3 max-w-2xl text-sm text-slate-300 sm:text-base">
+              Snapshots straight from the pitch, the sidelines, and the celebrations.
+            </p>
+          </div>
+          <div className="mt-6 grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6">
+            {galleryImages.map((src, i) => (
+              <button
+                key={src}
+                type="button"
+                onClick={() => setSelectedPhoto(i)}
+                className="group relative aspect-square overflow-hidden rounded-2xl border border-yellow-400/20 bg-black/40 transition hover:border-yellow-300/60 hover:shadow-[0_0_25px_rgba(250,204,21,0.25)] focus:outline-none focus:ring-2 focus:ring-yellow-300"
               >
-                💛 {d.name}
-              </span>
+                <img
+                  src={src}
+                  alt={`CSC moment ${i + 1}`}
+                  loading="lazy"
+                  className="h-full w-full object-cover transition duration-500 group-hover:scale-110"
+                />
+              </button>
             ))}
           </div>
         </section>
@@ -361,58 +430,34 @@ export default function ChomkaitalaSCFanPortal() {
           </div>
         </div>
 
-        <div className="mt-16 grid gap-8 lg:grid-cols-[0.9fr_1.1fr]">
-          <section className="rounded-[2rem] border border-yellow-400/25 bg-[#071a3f]/65 p-6 shadow-xl backdrop-blur">
-            <SectionHeader title="Match Schedule" subtitle="Only two matches. Full pressure. Full entertainment." compact />
-            <div className="space-y-4">
-              {matches.map((match) => (
-                <div key={match.name} className="rounded-3xl border border-yellow-400/20 bg-black/70 p-5">
-                  <p className="text-sm font-bold uppercase tracking-[0.25em] text-yellow-300">{match.name}</p>
-                  <h3 className="mt-2 text-2xl font-black">CSC vs {match.opponent}</h3>
-                  <p className="mt-3 text-slate-200">{match.date} · {match.time}</p>
-                  <p className="text-yellow-200/80">{match.venue}</p>
-                  <a
-                    href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(`${match.venue}, ${match.address}`)}`}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="mt-1 inline-block text-sm text-slate-300 underline-offset-2 hover:text-yellow-200 hover:underline"
-                  >
-                    {match.address}
-                  </a>
-                </div>
-              ))}
-            </div>
-          </section>
-
-          <section className="rounded-[2rem] border border-yellow-400/25 bg-[#071a3f]/65 p-6 shadow-xl backdrop-blur">
-            <SectionHeader title="Fan Talk" subtitle="Fans can leave their messages here." compact />
-            <form onSubmit={submitFanTalk} className="grid gap-3 sm:grid-cols-[0.8fr_1.2fr_auto]">
-              <input
-                value={fanName}
-                onChange={(e) => setFanName(e.target.value)}
-                placeholder="Your name"
-                className="rounded-2xl border border-yellow-400/25 bg-black/70 px-4 py-3 text-white outline-none focus:border-yellow-300"
-              />
-              <input
-                value={fanMessage}
-                onChange={(e) => setFanMessage(e.target.value)}
-                placeholder="Say something for CSC"
-                className="rounded-2xl border border-yellow-400/25 bg-black/70 px-4 py-3 text-white outline-none focus:border-yellow-300"
-              />
-              <button className="rounded-2xl bg-yellow-400 px-5 py-3 font-black text-black transition hover:bg-yellow-300 hover:shadow-[0_0_25px_rgba(250,204,21,0.35)]">
-                Post
-              </button>
-            </form>
-            <div className="mt-5 space-y-3">
-              {messages.map((message, index) => (
-                <div key={`${message}-${index}`} className="flex gap-3 rounded-2xl border border-yellow-400/15 bg-black/70 p-4 text-slate-200">
-                  <span className="mt-1 shrink-0 text-lg">💬</span>
-                  <p>{message}</p>
-                </div>
-              ))}
-            </div>
-          </section>
-        </div>
+        <section className="mt-16 rounded-[2rem] border border-yellow-400/25 bg-[#071a3f]/65 p-6 shadow-xl backdrop-blur">
+          <SectionHeader title="Fan Talk" subtitle="Fans can leave their messages here." compact />
+          <form onSubmit={submitFanTalk} className="grid gap-3 sm:grid-cols-[0.8fr_1.2fr_auto]">
+            <input
+              value={fanName}
+              onChange={(e) => setFanName(e.target.value)}
+              placeholder="Your name"
+              className="rounded-2xl border border-yellow-400/25 bg-black/70 px-4 py-3 text-white outline-none focus:border-yellow-300"
+            />
+            <input
+              value={fanMessage}
+              onChange={(e) => setFanMessage(e.target.value)}
+              placeholder="Say something for CSC"
+              className="rounded-2xl border border-yellow-400/25 bg-black/70 px-4 py-3 text-white outline-none focus:border-yellow-300"
+            />
+            <button className="rounded-2xl bg-yellow-400 px-5 py-3 font-black text-black transition hover:bg-yellow-300 hover:shadow-[0_0_25px_rgba(250,204,21,0.35)]">
+              Post
+            </button>
+          </form>
+          <div className="mt-5 space-y-3">
+            {messages.map((message, index) => (
+              <div key={`${message}-${index}`} className="flex gap-3 rounded-2xl border border-yellow-400/15 bg-black/70 p-4 text-slate-200">
+                <span className="mt-1 shrink-0 text-lg">💬</span>
+                <p>{message}</p>
+              </div>
+            ))}
+          </div>
+        </section>
 
         <section className="mt-16 overflow-hidden rounded-[2rem] border border-yellow-400/30 bg-gradient-to-br from-yellow-400/15 via-[#071a3f]/70 to-black p-6 shadow-[0_0_40px_rgba(250,204,21,0.18)] sm:p-8">
           <div className="grid gap-8 md:grid-cols-[1.1fr_0.9fr] md:items-center md:gap-10">
@@ -460,88 +505,6 @@ export default function ChomkaitalaSCFanPortal() {
           </div>
         </section>
 
-        {announcements.length > 0 && (
-          <div className="mt-16 grid gap-4">
-            {announcements.map((item) => (
-              <div
-                key={item.title}
-                className="relative overflow-hidden rounded-[1.75rem] border border-yellow-400/40 bg-gradient-to-br from-yellow-400/20 via-[#071a3f]/80 to-black p-5 shadow-[0_0_35px_rgba(250,204,21,0.18)] sm:p-6"
-              >
-                <div
-                  className="pointer-events-none absolute -right-10 -top-10 h-40 w-40 rounded-full bg-yellow-400/20 blur-3xl"
-                  aria-hidden
-                />
-                <div className="relative flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-                  <div className="flex items-start gap-4">
-                    <span className="grid h-12 w-12 shrink-0 place-items-center rounded-2xl border border-yellow-400/40 bg-yellow-400/10 text-2xl">
-                      {item.icon}
-                    </span>
-                    <div>
-                      <p className="text-[10px] font-black uppercase tracking-[0.3em] text-yellow-300 sm:text-xs">
-                        {item.tag}
-                      </p>
-                      <h3 className="mt-1 text-xl font-black text-white sm:text-2xl">{item.title}</h3>
-                      <p className="mt-2 max-w-2xl text-sm text-slate-200 sm:text-base">{item.body}</p>
-                    </div>
-                  </div>
-                  <span className="inline-flex shrink-0 items-center gap-2 self-start rounded-full border border-yellow-400/40 bg-yellow-400/10 px-4 py-2 text-xs font-bold text-yellow-100 sm:self-auto">
-                    <span aria-hidden>⏳</span> Offer ends <strong className="text-yellow-300">{item.endsOn}</strong>
-                  </span>
-                </div>
-              </div>
-            ))}
-          </div>
-        )}
-
-        <section className="mt-16 overflow-hidden rounded-[2rem] border border-yellow-400/30 bg-gradient-to-br from-[#071a3f]/80 via-[#061126]/80 to-black p-6 shadow-[0_0_40px_rgba(250,204,21,0.18)] sm:p-8">
-          <div className="grid gap-8 md:grid-cols-[1.1fr_0.9fr] md:items-center md:gap-10">
-            <div>
-              <p className="text-xs font-black uppercase tracking-[0.3em] text-yellow-200 sm:text-sm">Support the Squad</p>
-              <h2 className="mt-2 text-2xl font-black text-yellow-300 sm:text-3xl md:text-4xl">
-                Show some support to the team 💛
-              </h2>
-              <p className="mt-4 max-w-xl text-slate-200">
-                Every fan contribution goes towards jerseys, footballs, halftime snacks, and the team&apos;s growing chai bill. Send a small thank-you through PayPal in seconds.
-              </p>
-              <p className="mt-4 text-sm text-slate-400">
-                PayPal email:{" "}
-                <a
-                  href={`mailto:${supportInfo.paypalEmail}`}
-                  className="font-mono text-yellow-200 underline-offset-2 hover:underline"
-                >
-                  {supportInfo.paypalEmail}
-                </a>
-              </p>
-            </div>
-
-            <div className="flex flex-col gap-3">
-              <a
-                href={`https://www.paypal.com/paypalme/${supportInfo.paypalHandle}`}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center justify-center gap-2 rounded-2xl bg-yellow-400 px-6 py-4 text-base font-black text-black shadow-[0_0_25px_rgba(250,204,21,0.35)] transition hover:bg-yellow-300 hover:shadow-[0_0_35px_rgba(250,204,21,0.5)] sm:text-lg"
-              >
-                <span aria-hidden>💛</span> Support on PayPal
-              </a>
-              <div className="grid grid-cols-3 gap-2">
-                {supportInfo.suggestedAmounts.map((amount) => (
-                  <a
-                    key={amount}
-                    href={`https://www.paypal.com/paypalme/${supportInfo.paypalHandle}/${amount}`}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="rounded-2xl border border-yellow-400/40 bg-black/60 py-3 text-center font-bold text-yellow-200 transition hover:border-yellow-300 hover:bg-black"
-                  >
-                    {supportInfo.currencySymbol}{amount}
-                  </a>
-                ))}
-              </div>
-              <p className="text-center text-xs text-slate-400">
-                Amounts in USD · Powered by PayPal
-              </p>
-            </div>
-          </div>
-        </section>
       </main>
 
       <AnimatePresence>
@@ -587,6 +550,59 @@ export default function ChomkaitalaSCFanPortal() {
                 </div>
               </div>
             </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      <AnimatePresence>
+        {selectedPhoto !== null && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-50 grid place-items-center bg-black/85 p-4 backdrop-blur-sm"
+            onClick={() => setSelectedPhoto(null)}
+          >
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                setSelectedPhoto((p) => (p === null ? null : (p - 1 + galleryImages.length) % galleryImages.length));
+              }}
+              aria-label="Previous photo"
+              className="absolute left-4 top-1/2 z-10 -translate-y-1/2 rounded-full bg-black/70 px-4 py-2 text-2xl leading-none text-white hover:bg-black sm:left-8"
+            >
+              ‹
+            </button>
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                setSelectedPhoto((p) => (p === null ? null : (p + 1) % galleryImages.length));
+              }}
+              aria-label="Next photo"
+              className="absolute right-4 top-1/2 z-10 -translate-y-1/2 rounded-full bg-black/70 px-4 py-2 text-2xl leading-none text-white hover:bg-black sm:right-8"
+            >
+              ›
+            </button>
+            <button
+              onClick={() => setSelectedPhoto(null)}
+              aria-label="Close"
+              className="absolute right-4 top-4 z-10 rounded-full bg-black/70 px-3 py-1 text-2xl leading-none text-white hover:bg-black"
+            >
+              ×
+            </button>
+            <motion.img
+              key={selectedPhoto}
+              initial={{ scale: 0.95, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.95, opacity: 0 }}
+              onClick={(e) => e.stopPropagation()}
+              src={galleryImages[selectedPhoto]}
+              alt={`CSC moment ${selectedPhoto + 1}`}
+              className="max-h-[90vh] max-w-[95vw] rounded-2xl border border-yellow-400/30 object-contain shadow-[0_0_45px_rgba(250,204,21,0.22)]"
+            />
+            <p className="absolute bottom-4 left-1/2 -translate-x-1/2 rounded-full bg-black/70 px-4 py-1 text-xs font-bold text-yellow-200">
+              {selectedPhoto + 1} / {galleryImages.length}
+            </p>
           </motion.div>
         )}
       </AnimatePresence>
