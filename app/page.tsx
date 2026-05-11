@@ -174,7 +174,7 @@ quote: "I add flair on the field and flavor in the kitchen",
   },
 ];
 
-const galleryImages = Array.from({ length: 24 }, (_, i) => `/images/gallery/gallery-${String(i + 1).padStart(2, "0")}.jpeg`);
+const galleryImages = Array.from({ length: 29 }, (_, i) => `/images/gallery/gallery-${String(i + 1).padStart(2, "0")}.jpeg`);
 
 const sponsor = {
   name: "BAHAR Indian Restaurant & Catering",
@@ -351,23 +351,28 @@ export default function ChomkaitalaSCFanPortal() {
               Snapshots straight from the pitch, the sidelines, and the celebrations.
             </p>
           </div>
-          <div className="mt-6 grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6">
-            {galleryImages.map((src, i) => (
-              <button
-                key={src}
-                type="button"
-                onClick={() => setSelectedPhoto(i)}
-                className="group relative aspect-square overflow-hidden rounded-2xl border border-yellow-400/20 bg-black/40 transition hover:border-yellow-300/60 hover:shadow-[0_0_25px_rgba(250,204,21,0.25)] focus:outline-none focus:ring-2 focus:ring-yellow-300"
-              >
-                <img
-                  src={src}
-                  alt={`CSC moment ${i + 1}`}
-                  loading="lazy"
-                  className="h-full w-full object-cover transition duration-500 group-hover:scale-110"
-                />
-              </button>
-            ))}
+          <div className="mt-6 max-h-[60vh] overflow-y-auto rounded-2xl border border-yellow-400/15 bg-black/20 p-3 [scrollbar-color:rgba(250,204,21,0.5)_transparent] [scrollbar-width:thin] sm:max-h-[65vh]">
+            <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6">
+              {galleryImages.map((src, i) => (
+                <button
+                  key={src}
+                  type="button"
+                  onClick={() => setSelectedPhoto(i)}
+                  className="group relative aspect-square overflow-hidden rounded-2xl border border-yellow-400/20 bg-black/40 transition hover:border-yellow-300/60 hover:shadow-[0_0_25px_rgba(250,204,21,0.25)] focus:outline-none focus:ring-2 focus:ring-yellow-300"
+                >
+                  <img
+                    src={src}
+                    alt={`CSC moment ${i + 1}`}
+                    loading="lazy"
+                    className="h-full w-full object-cover transition duration-500 group-hover:scale-110"
+                  />
+                </button>
+              ))}
+            </div>
           </div>
+          <p className="mt-3 text-center text-xs text-slate-400">
+            {galleryImages.length} photos · scroll inside to see them all
+          </p>
         </section>
 
         <SectionHeader title="Meet the Squad" subtitle="Click any player photo to open the player card." />
