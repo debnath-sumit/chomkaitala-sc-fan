@@ -189,7 +189,7 @@ const announcements = [
     icon: "🎉",
     tag: "Chomkaitala Presents",
     title: "SSL Success Party",
-    body: "Date and Venue: TBD — stay tuned, details dropping soon!",
+    body: "Sunday, May 17, 2026 · 6:00 PM onwards · Best Western Hotel, Poway",
   },
 ];
 
